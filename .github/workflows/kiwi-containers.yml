@@ -1,0 +1,26 @@
+name: Build and deploy kiwi containers
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+      build-images:
+        runs-on: opensuse-leap-imgbuild
+        steps:
+          - name: 'Checkout GitHub Action'
+            uses: actions/checkout@main
+
+          - name: 'Login to GitHub Container Registry'
+            uses: redhat-actions/podman-login@v1
+            with:
+              registry: ghcr.io
+              username: ${{github.actor}}
+              password: ${{secrets.GITHUB_TOKEN}}
+
+          - name: Build leap base image
+            uses: aardsoft/ci-actions/kiwi-build@master
+            with:
+              image-directory: leap-base
