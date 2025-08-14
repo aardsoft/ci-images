@@ -1,7 +1,7 @@
 FROM registry.opensuse.org/opensuse/leap:15.6
 LABEL org.opencontainers.image.source="https://github.com/aardsoft/ci-images"
 
-ARG RUNNER_VERSION=2.323.0
+ARG RUNNER_VERSION=2.328.0
 ARG TARGETPLATFORM
 ARG RUNNER_CONTAINER_HOOKS_VERSION=0.7.0
 
