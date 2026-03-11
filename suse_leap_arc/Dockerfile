@@ -12,7 +12,7 @@ ENV XDG_RUNTIME_DIR=/run/user/1000
 
 RUN zypper addrepo -p 90 https://download.opensuse.org/repositories/Virtualization:/Appliances:/Builder/openSUSE_Leap_15.6/Virtualization:Appliances:Builder.repo && zypper addrepo https://download.opensuse.org/repositories/Virtualization:/containers/15.6/Virtualization:containers.repo && zypper addrepo https://cli.github.com/packages/rpm/gh-cli.repo && zypper --gpg-auto-import-keys ref -f
 RUN zypper -n in --from Virtualization_Appliances_Builder python3-kiwi
-RUN zypper -n in xz obs-service-kiwi_label_helper obs-service-replace_using_package_version obs-service-kiwi_metainfo_helper build skopeo umoci fakechroot fakeroot tar gzip bzip2 unzip sudo git jq gh wget strace podman libxml2-tools jing
+RUN zypper -n in xz skopeo obs-service-kiwi_label_helper obs-service-replace_using_package_version obs-service-kiwi_metainfo_helper build skopeo umoci fakechroot fakeroot tar gzip bzip2 unzip sudo git jq gh wget strace podman libxml2-tools jing
 
 RUN useradd -G 0 $USERNAME && echo "runner   ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/runner
 ENV HOME /home/${USERNAME}
