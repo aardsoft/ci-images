@@ -7,20 +7,15 @@ on:
   workflow_dispatch:
 
 jobs:
-      build-images:
-        runs-on: opensuse-leap-imgbuild
-        steps:
-          - name: 'Checkout GitHub Action'
-            uses: actions/checkout@main
+  build-images:
+    runs-on: opensuse-leap-imgbuild
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-          - name: 'Login to GitHub Container Registry'
-            uses: redhat-actions/podman-login@v1
-            with:
-              registry: ghcr.io
-              username: ${{github.actor}}
-              password: ${{secrets.GITHUB_TOKEN}}
-
-          - name: Build leap base image
-            uses: aardsoft/ci-actions/kiwi-build@master
-            with:
-              image-directory: leap-base
+      - name: Build leap base image
+        uses: aardsoft/ci-actions/kiwi-build-multiarch@master
+        with:
+          image-directory: leap-base
+          extra-architectures: aarch64
+          extra-repositories: https://download.opensuse.org/update/leap/15.6/oss/
