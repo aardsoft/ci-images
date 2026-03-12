@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<image schemaversion="7.5" name="leap-base">
+<image schemaversion="7.5" name="leap16-base">
     <description type="system">
         <author>Bernd Wachter</author>
         <contact>bwachter-kiwi@aardsoft.fi</contact>
@@ -14,7 +14,7 @@
         <locale>en_US</locale>
         <keytable>us</keytable>
         <type image="docker">
-            <containerconfig name="ghcr.io/aardsoft/leap-base" tag="0.1" user="user" workingdir="/home/user" />
+            <containerconfig name="ghcr.io/aardsoft/leap16-base" tag="0.1" user="user" workingdir="/home/user" />
         </type>
     </preferences>
     <users>
@@ -27,7 +27,6 @@
         <source path="obsrepositories:/"/>
     </repository>
     <packages type="image">
-        <package name="shadow"/>
         <package name="libcap-progs"/>
         <package name="grub2"/>
         <package name="ncurses-utils"/>
@@ -64,12 +63,12 @@
         <package name="gzip"/>
         <package name="udev"/>
         <package name="xz"/>
+        <package name="shadow"/>
         <package name="filesystem"/>
         <package name="glibc-locale"/>
         <package name="cracklib-dict-full"/>
         <package name="ca-certificates"/>
         <package name="ca-certificates-mozilla"/>
-        <package name="openSUSE-release"/>
     </packages>
     <packages type="delete">
         <package name="kernel-default"/>

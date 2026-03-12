@@ -8,14 +8,20 @@ on:
 
 jobs:
   build-images:
-    runs-on: opensuse-leap-imgbuild
+    runs-on: opensuse-leap16-imgbuild
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
+      - name: Build leap base image
+        uses: aardsoft/ci-actions/kiwi-build-multiarch@master
+        with:
+          image-directory: leap16-base
+          extra-architectures: aarch64
+          repository: https://download.opensuse.org/distribution/leap/16.0/repo/oss
 
       - name: Build leap base image
         uses: aardsoft/ci-actions/kiwi-build-multiarch@master
         with:
           image-directory: leap-base
           extra-architectures: aarch64
-          extra-repositories: https://download.opensuse.org/update/leap/15.6/oss/
