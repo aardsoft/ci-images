@@ -8,18 +8,35 @@ on:
 
 jobs:
   build-images:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     strategy:
-      # Allow other builds to continue if one fails
       fail-fast: false
       matrix:
         include:
           - tag: leap_arc
             dir: suse_leap_arc
+            platform: linux/amd64
+            runner: ubuntu-latest
+          - tag: leap_arc
+            dir: suse_leap_arc
+            platform: linux/arm64
+            runner: ubuntu-24.04-arm
           - tag: leap16_arc
             dir: suse_leap16_arc
+            platform: linux/amd64
+            runner: ubuntu-latest
+          - tag: leap16_arc
+            dir: suse_leap16_arc
+            platform: linux/arm64
+            runner: ubuntu-24.04-arm
           - tag: tumbleweed_arc
             dir: suse_tumbleweed_arc
+            platform: linux/amd64
+            runner: ubuntu-latest
+          - tag: tumbleweed_arc
+            dir: suse_tumbleweed_arc
+            platform: linux/arm64
+            runner: ubuntu-24.04-arm
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v6
@@ -31,7 +48,42 @@ jobs:
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
 
-      - name: 'Build and Push containers'
+      - name: 'Set up Docker Buildx'
+        uses: docker/setup-buildx-action@v3
+
+      - name: 'Build and push arch-specific image'
         run: |
-          docker build ${{ matrix.dir }} --tag ghcr.io/aardsoft/${{ matrix.tag }}:latest
-          docker push ghcr.io/aardsoft/${{ matrix.tag }}:latest
+          ARCH=$(echo ${{ matrix.platform }} | cut -d/ -f2)
+          docker buildx build ${{ matrix.dir }} \
+            --platform ${{ matrix.platform }} \
+            --build-arg TARGETPLATFORM=${{ matrix.platform }} \
+            --tag ghcr.io/aardsoft/${{ matrix.tag }}:${ARCH} \
+            --push
+
+  merge-manifests:
+    needs: build-images
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        tag:
+          - leap_arc
+          - leap16_arc
+          - tumbleweed_arc
+    steps:
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: 'Set up Docker Buildx'
+        uses: docker/setup-buildx-action@v3
+
+      - name: 'Create and push multi-arch manifest'
+        run: |
+          docker buildx imagetools create \
+            --tag ghcr.io/aardsoft/${{ matrix.tag }}:latest \
+            ghcr.io/aardsoft/${{ matrix.tag }}:amd64 \
+            ghcr.io/aardsoft/${{ matrix.tag }}:arm64
