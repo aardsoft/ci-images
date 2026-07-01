@@ -1,7 +1,7 @@
 FROM registry.opensuse.org/opensuse/tumbleweed:latest
 LABEL org.opencontainers.image.source="https://github.com/aardsoft/ci-images"
 
-ARG RUNNER_VERSION=2.332.0
+ARG RUNNER_VERSION=2.335.1
 ARG TARGETPLATFORM
 ARG RUNNER_CONTAINER_HOOKS_VERSION=0.8.1
 
