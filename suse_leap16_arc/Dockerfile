@@ -35,4 +35,16 @@ RUN curl -f -L -o runner-container-hooks.zip https://github.com/actions/runner-c
     && unzip ./runner-container-hooks.zip -d ./k8s \
     && rm runner-container-hooks.zip
 
+# Podman 6.0 defaults to /var/lib/containers for storage even when running
+# rootless if no user config exists. Force rootless paths so the runner user
+# (uid 1000) can initialise storage without permission denied.
+RUN mkdir -p /home/runner/.config/containers /home/runner/.local/share/containers \
+    && cat > /home/runner/.config/containers/storage.conf << 'EOF'
+[storage]
+driver = "overlay"
+graphroot = "/home/runner/.local/share/containers/storage"
+runroot = "/run/user/1000/containers"
+EOF
+RUN chown -R $USERNAME:$GID /home/runner
+
 USER runner
